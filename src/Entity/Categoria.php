@@ -74,12 +74,12 @@ class Categoria
         return $this;
     }
 
-    public function getEspacio(): ?ESpacio
+    public function getEspacio(): ?Espacio
     {
         return $this->espacio;
     }
 
-    public function setEspacio(?ESpacio $espacio): self
+    public function setEspacio(?Espacio $espacio): self
     {
         $this->espacio = $espacio;
 

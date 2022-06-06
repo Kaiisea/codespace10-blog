@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=ESpacioRepository::class)
  */
-class ESpacio
+class Espacio
 {
     /**
      * @ORM\Id
@@ -20,7 +20,7 @@ class ESpacio
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $nombre;
 
