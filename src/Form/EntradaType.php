@@ -31,10 +31,12 @@ class EntradaType extends AbstractType
             ->add('resumen', TextareaType::class, [
                 'attr' => [
                     'rows' => 4,
-                    'placeholder' => ''
+                    'placeholder' => 'Escribe aqui el resumen'
                 ]
             ])
-            ->add('texto')
+            ->add('texto', TextareaType::class, [
+                'attr' => ['class' => 'richeditor']
+            ])
             ->add('categoria', EntityType::class, [
                 'label' => 'Categoría',
                 'class' => Categoria::class

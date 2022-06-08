@@ -5,3 +5,5 @@
 logout:
   path: /logout
   methods: GET
+
+api_login_check:

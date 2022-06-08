@@ -12,28 +12,38 @@ class UsuarioType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        if ($options['isSuperadmin']) {
+            $choices = [
+                'Usuario normal' => 'ROLE_USERNORMAL',
+                'Administrador' => 'ROLE_ADMIN',
+                'Superadministrador' => 'ROLE_SUPERADMIN'
+            ];
+        } else {
+            $choices = [
+                'Usuario normal' => 'ROLE_USERNORMAL'
+            ];
+        }
+
         $builder
             ->add('email')
-            ->add('roles', ChoiceType::class, [
-                'choices' => [
-                    'Usuario normal' => 'ROLE_USER',
-                    'Administrador' => 'ROLE_ADMIN',
-                    'Superadministrador' => 'ROLE_SUPERADMIN'
-                ],
-                'multiple' => true,
-                'expanded' => true
-            ])
             ->add('password', PasswordType::class, [
-                
+                'required' => false
             ])
             ->add('nombre')
-            ->add('perfil')
-        ;
+            ->add('perfil');
+            if ($options['isSuperadmin']) {
+                $builder->add('roles', ChoiceType::class, [
+                    'choices' => $choices,
+                    'multiple' => true,
+                    'expanded' => true
+                ]);
+            } 
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'isSuperadmin' => false,
             'data_class' => Usuario::class,
         ]);
     }

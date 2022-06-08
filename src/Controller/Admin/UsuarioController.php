@@ -12,6 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
  * @Route("/admin/usuario")
@@ -23,21 +24,33 @@ class UsuarioController extends AbstractController
      */
     public function index(UsuarioRepository $usuarioRepository): Response
     {
+        if ($this->isGranted('ROLE_SUPERADMIN')) {
+            $usuarios= $usuarioRepository->findAll();
+        } else {
+            $usuarios = $usuarioRepository->findBy(['email' => $this->getUser()->getUserIdentifier()]);
+        }
         return $this->render('admin/usuario/index.html.twig', [
-            'usuarios' => $usuarioRepository->findAll(),
+            'usuarios' => $usuarios
         ]);
     }
 
     /**
      * @Route("/new", name="app_admin_usuario_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, UsuarioRepository $usuarioRepository): Response
-    {
+    public function new(Request $request,
+    UsuarioRepository $usuarioRepository,
+    UserPasswordHasherInterface $passwordHasher
+    ): Response {
         $usuario = new Usuario();
         $form = $this->createForm(UsuarioType::class, $usuario);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $hashedPassword = $passwordHasher->hashPassword(
+                $usuario,
+                $usuario->getPassword()
+            );
+            $usuario->setPassword($hashedPassword);
             $usuarioRepository->add($usuario, true);
 
             return $this->redirectToRoute('app_admin_usuario_index', [], Response::HTTP_SEE_OTHER);
@@ -62,10 +75,20 @@ class UsuarioController extends AbstractController
     /**
      * @Route("/{id}/edit", name="app_admin_usuario_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, Usuario $usuario, UsuarioRepository $usuarioRepository, UserPasswordHasherInterface $passwordHasher): Response
-    {
+    public function edit(
+        Request $request,
+         Usuario $usuario,
+          UsuarioRepository $usuarioRepository,
+           UserPasswordHasherInterface $passwordHasher
+           ): Response {
+        if (!$this->isGranted('ROLE_SUPERADMIN') && $usuario->getUserIdentifier() != $this->getUser()->getUserIdentifier()) {
+            throw $this->createAccessDeniedException('No puedes editar un usuario que no sea tuyo');
+        }
         $oldPassword = $usuario->getPassword();
-        $form = $this->createForm(UsuarioType::class, $usuario);
+        $oldRoles = $usuario->getRoles();
+        $form = $this->createForm(UsuarioType::class, $usuario, [
+            'isSuperadmin' => $this->isGranted('ROLE_SUPERADMIN')
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -77,6 +100,9 @@ class UsuarioController extends AbstractController
                     $usuario->getPassword()
                 );
                 $usuario->setPassword($hashedPassword);
+            }
+            if (!$this->isGranted('ROLE_SUPERADMIN')) {
+                $usuario->setRoles($oldRoles);
             }
             $usuarioRepository->add($usuario, true);
 

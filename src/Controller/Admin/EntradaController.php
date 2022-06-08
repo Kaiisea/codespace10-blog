@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Entrada;
 use App\Form\EntradaType;
 use App\Repository\EntradaRepository;
+use App\Repository\UsuarioRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,6 +73,8 @@ class EntradaController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $slugger = new AsciiSlugger();
+            $entrada->setSlug(strTolower($slugger->slug($entrada->getTitulo())) . '-' . uniqid());
+
             $entradaRepository->add($entrada, true);
 
             return $this->redirectToRoute('app_admin_entrada_index', [], Response::HTTP_SEE_OTHER);
