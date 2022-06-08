@@ -30,7 +30,7 @@ class Categoria
     private $descripcion;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ESpacio::class, inversedBy="categorias")
+     * @ORM\ManyToOne(targetEntity=Espacio::class, inversedBy="categorias")
      * @ORM\JoinColumn(nullable=false)
      */
     private $espacio;
@@ -44,7 +44,10 @@ class Categoria
     {
         $this->entradas = new ArrayCollection();
     }
-
+    public function __toString()
+    {
+        return $this->titulo;
+    } 
     public function getId(): ?int
     {
         return $this->id;

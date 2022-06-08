@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\ESpacio;
+use App\Entity\Espacio;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,10 +18,10 @@ class ESpacioRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ESpacio::class);
+        parent::__construct($registry, Espacio::class);
     }
 
-    public function add(ESpacio $entity, bool $flush = false): void
+    public function add(Espacio $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class ESpacioRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(ESpacio $entity, bool $flush = false): void
+    public function remove(Espacio $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 

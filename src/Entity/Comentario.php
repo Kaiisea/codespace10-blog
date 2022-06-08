@@ -47,7 +47,10 @@ class Comentario
     {
         return $this->id;
     }
-
+    public function __toString()
+    {
+        return $this->fecha->format('d/m/Y H:i:s') . $this->entrada->getTitulo();
+    } 
     public function getFecha(): ?\DateTimeInterface
     {
         return $this->fecha;
