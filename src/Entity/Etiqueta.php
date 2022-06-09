@@ -35,7 +35,7 @@ class Etiqueta
     }
     public function __toString()
     {
-        return $this->titulo;
+        return $this->nombre;
     } 
     public function getId(): ?int
     {

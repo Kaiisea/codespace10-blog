@@ -46,7 +46,7 @@ class Categoria
     }
     public function __toString()
     {
-        return $this->titulo;
+        return $this->nombre . 'AAAA';
     } 
     public function getId(): ?int
     {
