@@ -18,24 +18,24 @@ class EspacioController extends AbstractController
     /**
      * @Route("/", name="app_admin_espacio_index", methods={"GET"})
      */
-    public function index(ESpacioRepository $eSpacioRepository): Response
+    public function index(EspacioRepository $espacioRepository): Response
     {
         return $this->render('admin/espacio/index.html.twig', [
-            'espacios' => $eSpacioRepository->findAll(),
+            'espacios' => $espacioRepository->findAll(),
         ]);
     }
 
     /**
      * @Route("/new", name="app_admin_espacio_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, ESpacioRepository $eSpacioRepository): Response
+    public function new(Request $request, EspacioRepository $espacioRepository): Response
     {
         $espacio = new Espacio();
         $form = $this->createForm(EspacioType::class, $espacio);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $eSpacioRepository->add($espacio, true);
+            $espacioRepository->add($espacio, true);
 
             return $this->redirectToRoute('app_admin_espacio_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -59,13 +59,13 @@ class EspacioController extends AbstractController
     /**
      * @Route("/{id}/edit", name="app_admin_espacio_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, Espacio $espacio, ESpacioRepository $eSpacioRepository): Response
+    public function edit(Request $request, Espacio $espacio, EspacioRepository $espacioRepository): Response
     {
         $form = $this->createForm(EspacioType::class, $espacio);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $eSpacioRepository->add($espacio, true);
+            $espacioRepository->add($espacio, true);
 
             return $this->redirectToRoute('app_admin_espacio_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -79,10 +79,10 @@ class EspacioController extends AbstractController
     /**
      * @Route("/{id}", name="app_admin_espacio_delete", methods={"POST"})
      */
-    public function delete(Request $request, Espacio $espacio, ESpacioRepository $eSpacioRepository): Response
+    public function delete(Request $request, Espacio $espacio, EspacioRepository $espacioRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$espacio->getId(), $request->request->get('_token'))) {
-            $eSpacioRepository->remove($espacio, true);
+            $espacioRepository->remove($espacio, true);
         }
 
         return $this->redirectToRoute('app_admin_espacio_index', [], Response::HTTP_SEE_OTHER);
